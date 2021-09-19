@@ -1,22 +1,11 @@
-import {
-  FunctionComponent,
-  memo,
-  MouseEventHandler,
-  useMemo,
-  useState,
-} from 'react';
+import { FunctionComponent, memo, MouseEventHandler, useMemo, useState } from 'react';
 import { useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { useStyles } from './OrderBook.styles';
-import { BookState, LevelIds } from '../orderReducer';
+import { BookState, LevelIds, LevelValues } from '../orderReducer';
 import OrderBookLevels from '../OrderBookLevels/OrderBookLevels';
 import colors from '../../theme/colors';
-import {
-  sortFunctions,
-  getMax,
-  applyThousandSeparator,
-  SortDirection,
-} from '../../utils';
+import { sortFunctions, getMax, applyThousandSeparator, SortDirection } from '../../utils';
 
 type OrderBookProps = {
   orders: BookState;
@@ -24,12 +13,7 @@ type OrderBookProps = {
   thresholdPerLevel?: number;
 };
 
-const title = 'Order Books';
-const getSortedLevels = (
-  levels: LevelIds | undefined,
-  sortDirection: SortDirection,
-  threshold: number = 20
-) =>
+const getSortedLevels = (levels: LevelIds | undefined, sortDirection: SortDirection, threshold: number = 20) =>
   levels ? levels.sort(sortFunctions[sortDirection]).slice(0, threshold) : [];
 
 // const getTotalLevels = (ids: LevelIds, values: LevelValues) =>
@@ -40,7 +24,6 @@ const getSortedLevels = (
 //     return total;
 //   }, 0);
 
-// doubt if the total size needs to be only the ones being showed on screen
 // const biggestLevelTotalSize = getMax(
 //   getTotalLevels(sortedBidsIds, bids?.values),
 //   getTotalLevels(sortedAsksIds, asks?.values)
@@ -48,12 +31,12 @@ const getSortedLevels = (
 
 const OrderBook: FunctionComponent<OrderBookProps> = memo(
   ({ orders, initialSortDirection = 'ASC', thresholdPerLevel = 20 }) => {
-    const [sortDirection, setSortDirection] =
-      useState<SortDirection>(initialSortDirection);
+    const [sortDirection, setSortDirection] = useState<SortDirection>(initialSortDirection);
     const theme = useTheme();
     const classes = useStyles();
     const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
-    const { bids, asks } = orders;
+    const { bids, asks, product_id } = orders;
+    const title = `Order Books ${product_id || ''}`;
 
     const sortedBidsIds = useMemo(
       () => getSortedLevels(bids?.result, sortDirection, thresholdPerLevel),
@@ -87,7 +70,7 @@ const OrderBook: FunctionComponent<OrderBookProps> = memo(
     };
 
     return (
-      <div className={classes.container}>
+      <section className={classes.container}>
         {isSmallScreen ? (
           <div className={classes.header}>
             <h3> {title} </h3>
@@ -118,7 +101,7 @@ const OrderBook: FunctionComponent<OrderBookProps> = memo(
             onChangeSort={handleChangeSortDirection}
           />
         </div>
-      </div>
+      </section>
     );
   }
 );

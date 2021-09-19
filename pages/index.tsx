@@ -30,7 +30,7 @@ const OrdersHome: NextPage = () => {
   const [products, setProducts] = useState([PRODUCTS.PI_XBTUSD]);
   const [isNotificationOpen, setNotificationOpen] = useState(false);
   const { bookState, subscribe } = useBookSubscribe('book_ui_1', products, {
-    unsubscribeOnUnfocus: false,
+    unsubscribeOnUnfocus: !isNotificationOpen,
     onLoseFocus: () => {
       setNotificationOpen(true);
     },
@@ -43,9 +43,7 @@ const OrdersHome: NextPage = () => {
   };
 
   const handleToggleProduct: MouseEventHandler = () => {
-    const newProduct = products.includes(PRODUCTS.PI_XBTUSD)
-      ? [PRODUCTS.PI_ETHUSD]
-      : [PRODUCTS.PI_XBTUSD];
+    const newProduct = products.includes(PRODUCTS.PI_XBTUSD) ? [PRODUCTS.PI_ETHUSD] : [PRODUCTS.PI_XBTUSD];
 
     setProducts(newProduct);
     closeNotification();
@@ -71,18 +69,14 @@ const OrdersHome: NextPage = () => {
         open={isNotificationOpen}
         message="To reconnect order books, please click the reconnect button below or just toggle feed in the main screen."
         action={
-          <Button
-            size="small"
-            aria-label="reconnect"
-            color="inherit"
-            onClick={handleReconnect}
-          >
+          <Button size="small" aria-label="reconnect" color="inherit" onClick={handleReconnect}>
             Reconnect
           </Button>
         }
       />
 
       <main>
+        {!bookState && 'Loading orders...'}
         {bookState && (
           <>
             <OrderBook orders={bookState} />

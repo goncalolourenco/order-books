@@ -1,8 +1,6 @@
 const defaultThrottleTime = 1500;
 
-export const getThrottleBasedOnCPUS: (
-  numberCpus: number | undefined
-) => number = (numberCpus) => {
+export const getThrottleBasedOnCPUS: (numberCpus: number | undefined) => number = (numberCpus) => {
   if (!numberCpus || typeof numberCpus !== 'number') return defaultThrottleTime;
 
   if (numberCpus <= 4) {

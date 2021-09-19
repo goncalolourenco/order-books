@@ -56,7 +56,7 @@ const updateLevels = (
   let newLevels = { ...levels, values: { ...levels.values } };
 
   newPartialLevels.forEach(([partialPrice, partialSize]) => {
-    const previousLevel = newLevels.values[partialPrice];
+    const previousLevel = newLevels?.values[partialPrice];
     const newLevel = {
       price: partialPrice,
       size: partialSize,

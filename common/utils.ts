@@ -8,14 +8,16 @@ export function useThrottle<T>(value: T, interval = 500): T {
     if (Date.now() >= lastExecuted.current + interval) {
       lastExecuted.current = Date.now();
       setThrottledValue(value);
-    } else {
-      const timerId = setTimeout(() => {
-        lastExecuted.current = Date.now();
-        setThrottledValue(value);
-      }, interval);
-
-      return () => clearTimeout(timerId);
     }
+    // dont need this in websocket case
+    // } else {
+    //   const timerId = setTimeout(() => {
+    //     lastExecuted.current = Date.now();
+    //     setThrottledValue(value);
+    //   }, interval);
+
+    //   return () => clearTimeout(timerId);
+    // }
   }, [value, interval]);
 
   return throttledValue;
@@ -80,19 +82,13 @@ function getThousandsGroupRegex() {
   return /(\d)(?=(\d{3})+(?!\d))/g;
 }
 
-export function applyThousandSeparator(
-  nmbr: number | string,
-  thousandSeparator: string = ','
-) {
+export function applyThousandSeparator(nmbr: number | string, thousandSeparator: string = ',') {
   const str = nmbr + '';
   const thousandsGroupRegex = getThousandsGroupRegex();
   let index = str.search(/[1-9]/);
   index = index === -1 ? str.length : index;
 
   return (
-    str.substring(0, index) +
-    str
-      .substring(index, str.length)
-      .replace(thousandsGroupRegex, '$1' + thousandSeparator)
+    str.substring(0, index) + str.substring(index, str.length).replace(thousandsGroupRegex, '$1' + thousandSeparator)
   );
 }

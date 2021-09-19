@@ -13,11 +13,15 @@ const OrderBookLevelValues: FunctionComponent<OrderBookLevelValuesProps> = memo(
   ({ className, price, size, levelTotal, priceColumnColor }) => {
     return (
       <>
-        <span className={className} style={{ color: priceColumnColor }}>
+        <span role="cell" className={className} style={{ color: priceColumnColor }}>
           {applyThousandSeparator(price)}
         </span>
-        <span className={className}>{applyThousandSeparator(size)}</span>
-        <span className={className}>{applyThousandSeparator(levelTotal)}</span>
+        <span role="cell" className={className}>
+          {applyThousandSeparator(size)}
+        </span>
+        <span role="cell" className={className}>
+          {applyThousandSeparator(levelTotal)}
+        </span>
       </>
     );
   }

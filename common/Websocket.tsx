@@ -16,6 +16,12 @@ type ProviderProps = {
 
 type SocketIo = WebSocket | null;
 
+const WEBSOCKET_STATUS = {
+  CONNECTING: 0,
+  OPEN: 1,
+  CLOSING: 2,
+  CLOSED: 3,
+};
 export const WebSocketContext = createContext<SocketIo>(null);
 
 const WebSocketProvider: FunctionComponent<ProviderProps> = ({
@@ -27,9 +33,12 @@ const WebSocketProvider: FunctionComponent<ProviderProps> = ({
   useEffect(() => {
     const ws = new WebSocket(socketUrl);
     ws.onopen = () => setSocket(ws);
+    ws.onclose = () => console.log('closed web socket');
 
     return () => {
-      if (ws.readyState === 1) ws.close();
+      if (ws.readyState === WEBSOCKET_STATUS.OPEN) {
+        ws.close();
+      }
     };
   }, [socketUrl]);
 
@@ -47,7 +56,7 @@ export function useSendMessage<SendPayload>() {
 
   const sendMessage = useCallback(
     (jsonPayload: SendPayload) => {
-      if (socket && socket.readyState === 1) {
+      if (socket && socket.readyState === WEBSOCKET_STATUS.OPEN) {
         const payload: string = JSON.stringify(jsonPayload);
         socket.send(payload);
       }

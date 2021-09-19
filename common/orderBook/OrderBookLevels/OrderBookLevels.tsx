@@ -31,36 +31,38 @@ const OrderBookLevels: FunctionComponent<OrderLevelsProps> = memo(
   }) => {
     let accumulateLevelTotal = 0;
     const classes = useStyles({ progressBarDirection });
-
-    const classSort =
-      sortDirection === 'ASC' ? classes.sortAsc : classes.sortDesc;
+    const classSort = sortDirection === 'ASC' ? classes.sortAsc : classes.sortDesc;
 
     return (
-      <div className={classes.root}>
+      <div role="table" className={classes.root}>
         <div
+          role="row"
           className={classes.orderHeader}
           style={{
             direction: progressBarDirection,
           }}
         >
-          <span
-            className={`${classes.orderItemValue} ${classSort}`}
-            onClick={onChangeSort}
-          >
+          <span role="columnheader" className={`${classes.orderItemValue} ${classSort}`} onClick={onChangeSort}>
             Price
           </span>
-          <span className={classes.orderItemValue}>Size</span>
-          <span className={classes.orderItemValue}>Total</span>
+          <span role="columnheader" className={classes.orderItemValue}>
+            Size
+          </span>
+          <span role="columnheader" className={classes.orderItemValue}>
+            Total
+          </span>
         </div>
 
         {levelsIds &&
           levelsIds.map((levelPrice) => {
             const { price, size } = levelValues[levelPrice] || {};
             accumulateLevelTotal = accumulateLevelTotal + size;
+            const percentageCompleted = (accumulateLevelTotal / totalLevelsSize) * 100;
 
             return (
               !!price && (
                 <div
+                  role="row"
                   className={classes.orderItemRow}
                   key={price}
                   style={{ direction: progressBarDirection }}
@@ -74,7 +76,7 @@ const OrderBookLevels: FunctionComponent<OrderLevelsProps> = memo(
                   />
                   <ProgressBar
                     className={classes.progressBar}
-                    completed={(accumulateLevelTotal / totalLevelsSize) * 100}
+                    completed={percentageCompleted}
                     height="100%"
                     borderRadius="0px"
                     bgColor={progressBarColorCompleted}
